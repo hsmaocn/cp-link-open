@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: wp外链跳转插件
-Plugin URI: https://www.lovestu.com
+Plugin Name: WordPress外链跳转插件
+Plugin URI: https://github.com/hsmaocn/cp-link-open
 Description: WordPress外链跳转模块，外部链接，打开以后提示是否外站跳转
-Version: 1.0.1
-Author: applek
+Version: 1.0.2
+Author: applek(原作者)、hmao
 Author URI: https://www.lovestu.com
 */
 
