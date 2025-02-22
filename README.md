@@ -11,7 +11,7 @@
 - **Plugin Name**: WordPress外链跳转插件
 - **Plugin URI**: [Lovestu - 代码路上雾茫茫](https://www.lovestu.com) 
 - **Description**: WordPress外链跳转模块，外部链接，打开以后提示是否外站跳转
-- **Version**: 1.0.1
+- **Version**: 1.0.2
 - **Author**: applek
 - **Author URI**: [Lovestu - 代码路上雾茫茫](https://www.lovestu.com) 
 
