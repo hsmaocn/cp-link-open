@@ -1,9 +1,7 @@
 <?php
-// 加载 WordPress 环境
-require_once( dirname(__FILE__) . '/../../../wp-load.php' ); // 修改路径，确保指向 WordPress 根目录下的 wp-load.php
 
-if (isset($_GET['a'])) {
-    $link = base64_decode($_GET['a']);
+if (isset($_GET['link'])) {
+    $link = base64_decode($_GET['link']);
 }
 ?>
 <!doctype html>
@@ -13,7 +11,7 @@ if (isset($_GET['a'])) {
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>即将离开<?php echo get_bloginfo('name'); ?></title>
+    <title>即将离开<?php echo esc_html($site_name); ?></title>
     <!-- MDUI CSS -->
     <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/mdui/1.0.2/css/mdui.min.css">
     <style>
@@ -83,10 +81,10 @@ if (isset($_GET['a'])) {
     <div class="glassmorphism">
         <div id="box" class="mdui-card mdui-card-raised">
             <div class="mdui-card-content">
-                <p class="note mdui-typo-headline-opacity">即将离开<?php echo get_bloginfo('name'); ?>，请注意您的设备安全！</p>
-                <p class="link mdui-typo-subheading-opacity"><?php echo htmlspecialchars($link ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
+                <p class="note mdui-typo-headline-opacity">即将离开<?php echo esc_html($site_name); ?>，请注意您的设备安全！</p>
+                <p class="link mdui-typo-subheading-opacity"><?php echo esc_html($link ?? ''); ?></p>
                 <div class="btn-plane">
-                    <a href="<?php echo htmlspecialchars($link ?? '', ENT_QUOTES, 'UTF-8'); ?>" rel="nofollow" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">继续访问</a>
+                    <a href="<?php echo esc_url($redirect_url ?? ''); ?>" rel="nofollow" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">继续访问</a>
                 </div>
             </div>
         </div>

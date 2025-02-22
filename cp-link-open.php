@@ -39,6 +39,24 @@ class cp_link_open
         add_action('admin_enqueue_scripts', array($this, 'loadfile'));
         add_filter('the_content', array($this, 'content'));
         add_action('wp_ajax_wp_link_open_ajax', array($this, 'ajax'));
+        add_action('init', array($this, 'add_rewrite_rules'));
+        add_filter('query_vars', array($this, 'add_query_vars'));
+        add_action('template_redirect', array($this, 'handle_redirect'));
+        // 确保在插件激活时刷新重写规则
+        register_activation_hook(__FILE__, array($this, 'flush_rewrite_rules'));
+        // 确保在插件停用时清理重写规则
+        register_deactivation_hook(__FILE__, array($this, 'remove_rewrite_rules'));
+    }
+
+    function flush_rewrite_rules()
+    {
+        $this->add_rewrite_rules();
+        flush_rewrite_rules();
+    }
+
+    function remove_rewrite_rules()
+    {
+        flush_rewrite_rules();
     }
 
     function content($content)
@@ -49,19 +67,20 @@ class cp_link_open
             $isreplace = true;
             foreach ($url_whiteList_arr as $url_item) {
                 $re = stripos($item[1], $url_item);
-                if ($re != false) {
+                if ($re !== false) {
                     $isreplace = false;
                     break;
                 }
             }
             if ($isreplace == true) {
-                $html = $this->str_replace_once($item[1], $this->plugins_url . '/link.php?a=' . base64_encode($item[1]), $item[0]);
+                $encoded_link = base64_encode($item[1]);
+                $redirect_url = home_url('/wp-link-redirect/') . '?link=' . $encoded_link;
+                $html = $this->str_replace_once($item[1], $redirect_url, $item[0]);
                 $content = str_replace($item[0], $html, $content);
             }
         }
         return $content;
     }
-
 
     function loadset()
     {
@@ -69,7 +88,6 @@ class cp_link_open
         $data['whiteList'] = '';
         $this->plugin_set = json_decode(get_option($this->plugin_name . '_set', json_encode($data)), true);
     }
-
 
     function loadfile($slug)
     {
@@ -129,5 +147,29 @@ class cp_link_open
     {
         return update_option($this->plugin_name . '_set', json_encode($set));
     }
-}
 
+    function add_rewrite_rules()
+    {
+        add_rewrite_rule('^wp-link-redirect/?', 'index.php?wp_link_redirect=1', 'top');
+    }
+
+    function add_query_vars($vars)
+    {
+        $vars[] = 'wp_link_redirect';
+        return $vars;
+    }
+
+    function handle_redirect()
+    {
+        if (get_query_var('wp_link_redirect')) {
+            if (isset($_GET['link'])) {
+                $link = base64_decode($_GET['link']);
+                require_once(ABSPATH . 'wp-load.php');
+                $site_name = get_bloginfo('name');
+                $redirect_url = esc_url($link);
+                include 'link.php';
+                exit;
+            }
+        }
+    }
+}
